@@ -4,42 +4,60 @@ import 'package:flutter/material.dart';
 import 'package:quash_watch/screenshot_capture.dart';
 
 class ScreenshotScreen extends StatefulWidget {
-  const ScreenshotScreen({super.key});
+  const ScreenshotScreen({Key? key}) : super(key: key);
 
   @override
   State<ScreenshotScreen> createState() => _ScreenshotScreenState();
 }
 
 class _ScreenshotScreenState extends State<ScreenshotScreen> {
+  late ScreenshotController
+      screenshotController; // Declare ScreenshotController
+
+  late Timer timer;
+  int countdown = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    screenshotController =
+        ScreenshotController(); // Initialize ScreenshotController
+
+    // Initialize the timer
+    timer = Timer.periodic(const Duration(seconds: 5), (_) {
+      setState(() {
+        if (countdown > 0) {
+          countdown--;
+        } else {
+          countdown = 5;
+          screenshotController.captureAndSave("saving");
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel(); // Dispose the timer
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ScreenshotController _screenshotController = ScreenshotController();
-
-    late Timer _timer;
-
-    int _countdown = 2;
-
-    @override
-    void initState() {
-      super.initState();
-      _timer = Timer.periodic(const Duration(seconds: 5), (_) {
-        setState(() {
-          if (_countdown > 0) {
-            _countdown--;
-          } else {
-            _countdown = 5;
-            _screenshotController.captureAndSave("saving");
-          }
-        });
-      });
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Screenshot Screen'),
-      ),
-      body: Center(
-        child: Text(_countdown.toString()),
+    return RepaintBoundary(
+      key: screenshotController.containerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Screenshot Screen'),
+        ),
+        body: Center(
+          child: Text(
+              countdown == 0 ? "Taking Screenshot" : countdown.toString(),
+              style: const TextStyle(
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber)),
+        ),
       ),
     );
   }

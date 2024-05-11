@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:quash_watch/crash_log.dart';
 
 class ErrorLogWidget extends StatefulWidget {
   const ErrorLogWidget({super.key});
@@ -11,6 +12,7 @@ class ErrorLogWidget extends StatefulWidget {
 
 class _ErrorLogWidgetState extends State<ErrorLogWidget> {
   List<String> errorLogs = [];
+  ErrorLogger logger = ErrorLogger();
 
   @override
   void initState() {
@@ -19,14 +21,10 @@ class _ErrorLogWidgetState extends State<ErrorLogWidget> {
   }
 
   Future<void> loadErrorLogs() async {
-    final directory = Directory('/storage/emulated/0/Download');
-    final logFile = File('${directory.path}/error_log.txt');
-    if (await logFile.exists()) {
-      final logs = await logFile.readAsLines();
-      setState(() {
-        errorLogs = logs.reversed.toList();
-      });
-    }
+    final logs = await logger.loadErrorLogs();
+    setState(() {
+      errorLogs = logs;
+    });
   }
 
   @override
