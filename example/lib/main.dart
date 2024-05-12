@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quash_watch/quash_crash_watch.dart';
+import 'package:quash_watch/controllers/quash_crash_controller.dart';
 import 'package:quash_watch_example/quash_board.dart';
 
 void main() {

@@ -2,9 +2,11 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:quash_watch/crash_data_model.dart';
+import 'package:quash_watch/controllers/quash_crash_controller.dart';
 import 'package:intl/intl.dart';
-import 'package:quash_watch/quash_crash_watch.dart';
+import 'package:quash_watch/models/log_entry_model.dart';
+import 'package:quash_watch/utils/quash_utils.dart';
+import 'package:quash_watch/quash.dart';
 
 class AppCrashScreen extends StatefulWidget {
   const AppCrashScreen({Key? key}) : super(key: key);
@@ -39,6 +41,7 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    QuashWatch quashWatch = QuashWatch();
     return Scaffold(
       appBar: AppBar(
         title: const Text('App Crash Screen'),
@@ -57,7 +60,7 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
           const SizedBox(height: 10),
           Expanded(
             child: FutureBuilder<List<LogEntry>>(
-              future: QuashCrashWatch.loadErrorLogs(),
+              future: quashWatch.loadErrorLogsAsCrashData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -100,14 +103,6 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
       ),
     );
   }
-}
-
-class CrashData {
-  final DateTime timestamp;
-  final String errorType;
-  final Severity severity;
-
-  CrashData(this.timestamp, this.errorType, this.severity);
 }
 
 Color getColorFromSeverity(Severity severity) {

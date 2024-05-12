@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:quash_watch/quash_network_watch.dart';
+import 'package:quash_watch/controllers/quash_network_controller.dart';
 
 class NetworkLogScreen extends StatefulWidget {
   const NetworkLogScreen({Key? key}) : super(key: key);

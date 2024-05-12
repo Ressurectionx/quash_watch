@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:quash_watch/crash_data_model.dart';
-import 'package:quash_watch/quash_crash_watch.dart';
+import 'package:quash_watch/controllers/quash_crash_controller.dart';
+import 'package:quash_watch/models/log_entry_model.dart';
 
 class ErrorLogWidget extends StatefulWidget {
   const ErrorLogWidget({super.key});

@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:quash_watch/models/network_log_entry_model.dart';
+
+import 'package:dio/dio.dart';
 
 class QuashNetworkWatch extends Interceptor {
+  final NetworkLogger _networkLogger = NetworkLogger();
+
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    NetworkLogger().saveLogsToFile({
+    _networkLogger.saveLogsToFile({
       'timestamp': DateTime.now().toIso8601String(),
       'url': response.requestOptions.uri.toString(),
       'statusCode': response.statusCode,
@@ -18,13 +23,23 @@ class QuashNetworkWatch extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    NetworkLogger().saveLogsToFile({
+    _networkLogger.saveLogsToFile({
       'timestamp': DateTime.now().toIso8601String(),
       'url': err.requestOptions.uri.toString(),
       'statusCode': err.response?.statusCode,
       'responseData': err.response?.data,
     });
     super.onError(err, handler);
+  }
+
+  // Getter method to access saveLogsToFile method from NetworkLogger
+  Future<void> saveLogsToFile(Map<String, dynamic> logs) async {
+    await _networkLogger.saveLogsToFile(logs);
+  }
+
+  // Getter method to access retrieveLogsAsJson method from NetworkLogger
+  Future<List<Map<String, dynamic>>> retrieveLogsAsJson() async {
+    return await _networkLogger.retrieveLogsAsJson();
   }
 }
 
@@ -58,28 +73,5 @@ class NetworkLogger {
       logs.add(NetworkLogEntry.fromJson(jsonDecode(line)));
     });
     return logs;
-  }
-}
-
-class NetworkLogEntry {
-  final String timestamp;
-  final String url;
-  final int statusCode;
-  final Map<String, dynamic> responseData;
-
-  NetworkLogEntry({
-    required this.timestamp,
-    required this.url,
-    required this.statusCode,
-    required this.responseData,
-  });
-
-  factory NetworkLogEntry.fromJson(Map<String, dynamic> json) {
-    return NetworkLogEntry(
-      timestamp: json['timestamp'],
-      url: json['url'],
-      statusCode: json['statusCode'],
-      responseData: json['responseData'],
-    );
   }
 }

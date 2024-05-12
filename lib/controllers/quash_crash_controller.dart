@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:quash_watch/crash_data_model.dart';
+import 'package:quash_watch/models/log_entry_model.dart';
+import 'package:quash_watch/utils/quash_utils.dart';
 
 class QuashCrashWatch {
   static final ErrorLogger _errorLogger = ErrorLogger();
@@ -20,8 +21,24 @@ class QuashCrashWatch {
     await _errorLogger.logError(logMessage);
   }
 
-  static Future<List<LogEntry>> loadErrorLogs() async {
-    return _errorLogger.loadErrorLogs();
+  static Future<List<Map<String, dynamic>>> loadErrorLogs() async {
+    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
+    List<Map<String, dynamic>> jsonLogs = [];
+    for (LogEntry log in errorLogs) {
+      jsonLogs.add(log.toJson());
+    }
+    return jsonLogs;
+  }
+
+  // If you also want to parse JSON into CrashData objects
+  static Future<List<LogEntry>> loadErrorLogsAsCrashData() async {
+    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
+    List<LogEntry> crashDataList = [];
+    for (LogEntry log in errorLogs) {
+      crashDataList.add(LogEntry.fromJson(log.toJson()));
+    }
+    // Return an empty list if there are no error logs
+    return crashDataList;
   }
 }
 
@@ -88,14 +105,26 @@ class ErrorLogger {
   }
 }
 
-enum Severity { low, medium, high }
 
-Severity getSeverityFromError(String error) {
-  if (error.contains('FormatException')) {
-    return Severity.low;
-  } else if (error.contains('FileSystemException')) {
-    return Severity.medium;
-  } else {
-    return Severity.high;
-  }
-}
+
+// class QuashCrashWatch {
+//   static final ErrorLogger _errorLogger = ErrorLogger();
+
+//   static Future<void> handleFlutterErrors() async {
+//     FlutterError.onError = (FlutterErrorDetails details) {
+//       // Log the error
+//       logError(details.exceptionAsString());
+//       // You can also do other things here like show a custom error UI
+//     };
+//   }
+
+//   static Future<void> logError(String error) async {
+//     final timeStamp = DateTime.now();
+//     final logMessage = 'Crash: $error at $timeStamp';
+//     await _errorLogger.logError(logMessage);
+//   }
+
+//   static Future<List<LogEntry>> loadErrorLogs() async {
+//     return _errorLogger.loadErrorLogs();
+//   }
+// }
