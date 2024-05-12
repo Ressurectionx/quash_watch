@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:quash_watch/crash_data_model.dart';
 import 'package:quash_watch/crash_log.dart';
 
 class ErrorLogWidget extends StatefulWidget {
@@ -11,7 +12,6 @@ class ErrorLogWidget extends StatefulWidget {
 }
 
 class _ErrorLogWidgetState extends State<ErrorLogWidget> {
-  List<String> errorLogs = [];
   ErrorLogger logger = ErrorLogger();
 
   @override
@@ -19,6 +19,8 @@ class _ErrorLogWidgetState extends State<ErrorLogWidget> {
     super.initState();
     loadErrorLogs();
   }
+
+  List<LogEntry> errorLogs = [];
 
   Future<void> loadErrorLogs() async {
     final logs = await logger.loadErrorLogs();
@@ -33,7 +35,7 @@ class _ErrorLogWidgetState extends State<ErrorLogWidget> {
       itemCount: errorLogs.length,
       separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) => ListTile(
-        title: Text(errorLogs[index]),
+        title: Text(errorLogs[index].toString()),
       ),
     );
   }

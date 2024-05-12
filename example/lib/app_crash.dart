@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:quash_watch/crash_data_model.dart';
 import 'package:quash_watch/crash_log.dart';
-
-enum Severity { low, medium, high }
+import 'package:intl/intl.dart';
 
 class AppCrashScreen extends StatefulWidget {
   const AppCrashScreen({Key? key}) : super(key: key);
@@ -21,6 +21,21 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
     CrashLogController.handleFlutterErrors();
   }
 
+  void throwRandomException() {
+    // Define a list of potential exceptions
+    final exceptions = [
+      Exception('This is a random exception!'),
+      ArgumentError('Wrong argument provided!'),
+      UnsupportedError('This feature is not supported!'),
+    ];
+
+    // Generate a random index within the list bounds
+    final randomIndex = Random().nextInt(exceptions.length);
+    setState(() {});
+    // Throw the exception at the random index
+    throw exceptions[randomIndex];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,15 +48,14 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                CrashLogController.logError('Manually triggered crash');
-                // Trigger a crash here if needed
+                throwRandomException();
               },
               child: const Text('Crash The App'),
             ),
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: FutureBuilder<List<String>>(
+            child: FutureBuilder<List<LogEntry>>(
               future: CrashLogController.loadErrorLogs(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,14 +63,31 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
-                  final logs = snapshot.data ?? [];
-                  // Process logs and display UI
+                  final List<LogEntry> logs = snapshot.data ?? [];
                   return ListView.builder(
                     itemCount: logs.length,
                     itemBuilder: (context, index) {
-                      // Display logs in UI
+                      final LogEntry crashData = logs[index];
                       return ListTile(
-                        title: Text(logs[index]),
+                        leading: Icon(
+                          Icons.bug_report,
+                          color: getColorFromSeverity(crashData.severity),
+                        ), // Add bug report icon at leading
+                        trailing: Text(
+                          crashData.severity.toString().split('.').last,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: getColorFromSeverity(crashData.severity)),
+                        ), // Show severity with bold and color
+                        title: Text(
+                          crashData.message.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ), // Bold title
+                        subtitle: Text(
+                          DateFormat('dd/MM/yy hh:mm')
+                              .format(crashData.timeStamp),
+                        ), // Show time and date in format dd/MM/yy hh:mm
+                        // ... other UI elements using crashData properties
                       );
                     },
                   );

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
+import 'package:quash_watch/crash_data_model.dart';
 import 'package:quash_watch/crash_log.dart';
 import 'package:quash_watch/network_log.dart';
 import 'package:quash_watch/screenshot_capture.dart';
@@ -14,16 +17,33 @@ class QuashWatch {
     return QuashWatchPlatform.instance.getPlatformVersion();
   }
 
-  Future<void> saveNetworkLogs(String logs) async {
+  Future<void> saveNetworkLogs(Map<String, dynamic> logs) async {
     await _networkLogger.saveLogsToFile(logs);
   }
 
   Future<String> retrieveNetworkLogs() async {
-    return _networkLogger.retrieveLogsFromFile();
+    final logs = await _networkLogger.retrieveLogsAsJson();
+    return logs.toString(); // adjust the formatting as needed
   }
 
-  Future<List<String>> loadErrorLogs() async {
-    return _errorLogger.loadErrorLogs();
+  Future<List<Map<String, dynamic>>> loadErrorLogs() async {
+    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
+    List<Map<String, dynamic>> jsonLogs = [];
+    for (LogEntry log in errorLogs) {
+      jsonLogs.add(log.toJson());
+    }
+    return jsonLogs;
+  }
+
+  // If you also want to parse JSON into CrashData objects
+  Future<List<LogEntry>> loadErrorLogsAsCrashData() async {
+    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
+    List<LogEntry> crashDataList = [];
+    for (LogEntry log in errorLogs) {
+      crashDataList.add(LogEntry.fromJson(log.toJson()));
+    }
+    // Return an empty list if there are no error logs
+    return crashDataList;
   }
 
   Future<void> logError(String error) async {
