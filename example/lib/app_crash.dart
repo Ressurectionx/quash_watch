@@ -6,7 +6,7 @@ import 'package:quash_watch/controllers/quash_crash_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:quash_watch/models/log_entry_model.dart';
 import 'package:quash_watch/utils/quash_utils.dart';
-import 'package:quash_watch/quash.dart';
+import 'package:quash_watch/quash_watch.dart';
 
 class AppCrashScreen extends StatefulWidget {
   const AppCrashScreen({Key? key}) : super(key: key);
@@ -16,8 +16,6 @@ class AppCrashScreen extends StatefulWidget {
 }
 
 class _AppCrashScreenState extends State<AppCrashScreen> {
-  final List<CrashData> _crashLogs = [];
-
   @override
   void initState() {
     super.initState();
