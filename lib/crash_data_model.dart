@@ -1,4 +1,4 @@
-import 'package:quash_watch/crash_log.dart';
+import 'package:quash_watch/quash_crash_watch.dart';
 
 class CrashData {
   final DateTime timestamp;

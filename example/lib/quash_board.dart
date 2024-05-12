@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quash_watch_example/app_crash.dart';
-import 'package:quash_watch_example/network_log.dart';
-import 'package:quash_watch_example/screen_shot.dart';
+import 'package:quash_watch_example/network_log_screen.dart';
+import 'package:quash_watch_example/screen_shot_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   @override
@@ -47,7 +47,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       case 1:
         return const AppCrashScreen();
       case 2:
-        return const NetworkLog();
+        return const NetworkLogScreen();
       default:
         return Container();
     }

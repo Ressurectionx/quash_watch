@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:quash_watch/crash_data_model.dart';
-import 'package:quash_watch/crash_log.dart';
-import 'package:quash_watch/network_log.dart';
-import 'package:quash_watch/screenshot_capture.dart';
+import 'package:quash_watch/quash_crash_watch.dart';
+import 'package:quash_watch/quash_network_watch.dart';
+import 'package:quash_watch/quash_screen_watch.dart';
 
 import 'quash_watch_platform_interface.dart';
 
 class QuashWatch {
   final NetworkLogger _networkLogger = NetworkLogger();
   final ErrorLogger _errorLogger = ErrorLogger();
-  final ScreenshotController _screenshotController = ScreenshotController();
+  // final QuashScreenWatch _screenshotController = QuashScreenWatch(child: widget,);
 
   Future<String?> getPlatformVersion() {
     return QuashWatchPlatform.instance.getPlatformVersion();
@@ -50,7 +50,7 @@ class QuashWatch {
     await _errorLogger.logError(error);
   }
 
-  Future<String?> captureAndSaveScreenshot(String fileName) async {
-    return _screenshotController.captureAndSave(fileName);
-  }
+  // Future<String?> captureAndSaveScreenshot(String fileName) async {
+  //   return _screenshotController.captureAndSave(fileName);
+  // }
 }

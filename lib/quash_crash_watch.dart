@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:quash_watch/crash_data_model.dart';
 
-class CrashLogController {
+class QuashCrashWatch {
   static final ErrorLogger _errorLogger = ErrorLogger();
 
   static Future<void> handleFlutterErrors() async {

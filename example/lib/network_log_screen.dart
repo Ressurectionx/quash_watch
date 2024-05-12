@@ -2,23 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:quash_watch/network_log.dart';
+import 'package:quash_watch/quash_network_watch.dart';
 
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-
-class NetworkLog extends StatefulWidget {
-  const NetworkLog({Key? key}) : super(key: key);
+class NetworkLogScreen extends StatefulWidget {
+  const NetworkLogScreen({Key? key}) : super(key: key);
 
   @override
-  _NetworkLogState createState() => _NetworkLogState();
+  _NetworkLogScreenState createState() => _NetworkLogScreenState();
 }
 
-class _NetworkLogState extends State<NetworkLog> {
+class _NetworkLogScreenState extends State<NetworkLogScreen> {
   List<Map<String, dynamic>> logs = [];
 
   @override

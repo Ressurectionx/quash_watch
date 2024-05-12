@@ -1,9 +1,10 @@
-import 'dart:io';
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:quash_watch/crash_data_model.dart';
-import 'package:quash_watch/crash_log.dart';
 import 'package:intl/intl.dart';
+import 'package:quash_watch/quash_crash_watch.dart';
 
 class AppCrashScreen extends StatefulWidget {
   const AppCrashScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
   @override
   void initState() {
     super.initState();
-    CrashLogController.handleFlutterErrors();
+    QuashCrashWatch.handleFlutterErrors();
   }
 
   void throwRandomException() {
@@ -56,7 +57,7 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
           const SizedBox(height: 10),
           Expanded(
             child: FutureBuilder<List<LogEntry>>(
-              future: CrashLogController.loadErrorLogs(),
+              future: QuashCrashWatch.loadErrorLogs(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
