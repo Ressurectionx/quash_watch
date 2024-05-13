@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:quash_watch/controllers/quash_crash_controller.dart';
 import 'package:intl/intl.dart';
-import 'package:quash_watch/models/log_entry_model.dart';
 import 'package:quash_watch/utils/quash_utils.dart';
 import 'package:quash_watch/quash_watch.dart';
 
@@ -19,7 +18,6 @@ class _AppCrashScreenState extends State<AppCrashScreen> {
   @override
   void initState() {
     super.initState();
-    QuashCrashWatch.handleFlutterErrors();
   }
 
   void throwRandomException() {

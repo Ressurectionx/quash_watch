@@ -6,6 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
+
 class QuashScreenWatch extends StatefulWidget {
   final Widget child;
   const QuashScreenWatch({Key? key, required this.child}) : super(key: key);
@@ -22,7 +24,7 @@ class _QuashScreenWatchState extends State<QuashScreenWatch> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(seconds: 10), (_) {
-      //   _captureAndSave("screenshot");
+      _captureAndSave("screenshot");
     });
   }
 
@@ -38,8 +40,8 @@ class _QuashScreenWatchState extends State<QuashScreenWatch> {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd_MM_yyyy_hh_mm');
     final String formattedDateTime = formatter.format(now);
-    final directory = Directory(
-        '/storage/emulated/0/Download'); //await getDownloadsDirectory();
+    final directory = Directory('/storage/emulated/0/Download');
+    //await getDownloadsDirectory();
     final path = '${directory.path}/${formattedDateTime}screenshot.png';
     // Save the screenshot to the specified path
     await File(path).writeAsBytes(content);

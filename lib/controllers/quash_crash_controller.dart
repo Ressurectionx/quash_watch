@@ -1,19 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:quash_watch/models/log_entry_model.dart';
 import 'package:quash_watch/utils/quash_utils.dart';
 
 class QuashCrashWatch {
   static final ErrorLogger _errorLogger = ErrorLogger();
-
-  static Future<void> handleFlutterErrors() async {
-    FlutterError.onError = (FlutterErrorDetails details) {
-      // Log the error
-      logError(details.exceptionAsString());
-      // You can also do other things here like show a custom error UI
-    };
-  }
 
   static Future<void> logError(String error) async {
     final timeStamp = DateTime.now();
@@ -47,7 +40,11 @@ class ErrorLogger {
   late final File _logFile;
 
   ErrorLogger() {
-    _directory = Directory('/storage/emulated/0/Download');
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    _directory = (await getDownloadsDirectory())!;
     _logFile = File('${_directory.path}/error_log.txt');
   }
 

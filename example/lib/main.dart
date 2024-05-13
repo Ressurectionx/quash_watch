@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:quash_watch/controllers/quash_crash_controller.dart';
+import 'package:quash_watch/quash.dart';
 import 'package:quash_watch_example/quash_board.dart';
 
 void main() {
-  FlutterError.onError = (FlutterErrorDetails details) {
-    QuashCrashWatch
-        .handleFlutterErrors(); // You can also do other things here like show a custom error UI
+  QuashWatch quash = QuashWatch();
+
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    await quash.handleErrors();
   };
   runApp(MyApp());
 }
