@@ -1,26 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:quash_watch/controllers/quash_screen_controller.dart';
-
-class ScreenshotScreen extends StatelessWidget {
-  const ScreenshotScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return QuashScreenWatch(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Screenshot Screen'),
-        ),
-        body: const Center(
-          child: CountdownWidget(),
-        ),
-      ),
-    );
-  }
-}
 
 class CountdownWidget extends StatefulWidget {
   const CountdownWidget({Key? key}) : super(key: key);

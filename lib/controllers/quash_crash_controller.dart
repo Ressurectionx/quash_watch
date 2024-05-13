@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:quash_watch/models/log_entry_model.dart';
 import 'package:quash_watch/utils/quash_utils.dart';
@@ -9,43 +9,37 @@ class QuashCrashWatch {
   static final ErrorLogger _errorLogger = ErrorLogger();
 
   static Future<void> logError(String error) async {
+    print("here");
     final timeStamp = DateTime.now();
     final logMessage = 'Crash: $error at $timeStamp';
     await _errorLogger.logError(logMessage);
   }
 
   static Future<List<Map<String, dynamic>>> loadErrorLogs() async {
-    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
-    List<Map<String, dynamic>> jsonLogs = [];
-    for (LogEntry log in errorLogs) {
-      jsonLogs.add(log.toJson());
-    }
-    return jsonLogs;
+    final errorLogs = await _errorLogger.loadErrorLogs();
+    return errorLogs.map((log) => log.toJson()).toList();
   }
 
-  // If you also want to parse JSON into CrashData objects
   static Future<List<LogEntry>> loadErrorLogsAsCrashData() async {
-    List<LogEntry> errorLogs = await _errorLogger.loadErrorLogs();
-    List<LogEntry> crashDataList = [];
-    for (LogEntry log in errorLogs) {
-      crashDataList.add(LogEntry.fromJson(log.toJson()));
-    }
-    // Return an empty list if there are no error logs
-    return crashDataList;
+    final errorLogs = await _errorLogger.loadErrorLogs();
+    return errorLogs.map((log) => LogEntry.fromJson(log.toJson())).toList();
   }
 }
 
 class ErrorLogger {
-  late final Directory _directory;
-  late final File _logFile;
+  Directory _directory = Directory("");
+  File _logFile = File('');
 
   ErrorLogger() {
     _initialize();
   }
 
   Future<void> _initialize() async {
-    _directory = (await getDownloadsDirectory())!;
-    _logFile = File('${_directory.path}/error_log.txt');
+    _directory = await getApplicationDocumentsDirectory();
+    _logFile = File('${_directory.path}/crash_log21.txt');
+    if (!await _logFile.exists()) {
+      await _logFile.create(recursive: true);
+    }
   }
 
   Future<void> logError(String error) async {
@@ -56,7 +50,6 @@ class ErrorLogger {
       final logJson = json.encode(logEntry.toJson());
       await _logFile.writeAsString('$logJson\n', mode: FileMode.append);
     } catch (e) {
-      // Handle file operation errors
       print('Error logging error: $e');
     }
   }
@@ -69,9 +62,7 @@ class ErrorLogger {
           try {
             return LogEntry.fromJson(json.decode(log.trim()));
           } catch (e) {
-            // Log and handle any parsing errors
             print('Error parsing log entry: $log\nError: $e');
-            // Return a default LogEntry or handle the error as needed
             return LogEntry('', DateTime.now(), Severity.high);
           }
         }).toList();
@@ -79,7 +70,6 @@ class ErrorLogger {
         return [];
       }
     } catch (e) {
-      // Handle file operation errors
       print('Error loading error logs: $e');
       return [];
     }
@@ -89,13 +79,11 @@ class ErrorLogger {
     try {
       if (await _logFile.exists()) {
         final logs = await loadErrorLogs();
-        // Convert logs to JSON format
         return json.encode({'logs': logs.map((log) => log.toJson()).toList()});
       } else {
         return json.encode({'logs': []});
       }
     } catch (e) {
-      // Handle file operation errors
       print('Error retrieving logs: $e');
       return json.encode({'error': 'Error retrieving logs'});
     }

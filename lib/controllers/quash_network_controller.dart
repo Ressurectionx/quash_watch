@@ -5,8 +5,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:quash_watch/models/network_log_entry_model.dart';
 
-import 'package:dio/dio.dart';
-
 class QuashNetworkWatch extends Interceptor {
   final NetworkLogger _networkLogger = NetworkLogger();
 
@@ -44,19 +42,38 @@ class QuashNetworkWatch extends Interceptor {
 }
 
 class NetworkLogger {
-  final String _logFilePath = 'network_logs.txt';
+  Directory _directory = Directory("");
+  File _logFile = File('');
+
+  NetworkLogger() {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    _directory =
+        await getApplicationDocumentsDirectory(); //Directory('/storage/emulated/0/Download');
+    _logFile = File('${_directory.path}/network_log1.txt');
+    // Create the log file if it doesn't exist
+    if (!await _logFile.exists()) {
+      await _logFile.create(recursive: true);
+    }
+  }
 
   Future<void> saveLogsToFile(Map<String, dynamic> log) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$_logFilePath');
-    final logString = jsonEncode(log);
-    await file.writeAsString('$logString\n', mode: FileMode.append);
+    try {
+      // Convert log map to JSON string
+      final logString = jsonEncode(log);
+
+      // Append log string to file
+      await _logFile.writeAsString('$logString\n', mode: FileMode.append);
+    } catch (error) {
+      print('Error saving logs to file: $error');
+      // Optionally, consider logging the error to a different location (e.g., console)
+    }
   }
 
   Future<List<Map<String, dynamic>>> retrieveLogsAsJson() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$_logFilePath');
-    final lines = await file.readAsLines();
+    final lines = await _logFile.readAsLines();
     List<Map<String, dynamic>> logs = [];
     lines.forEach((line) {
       logs.add(jsonDecode(line));
@@ -65,9 +82,7 @@ class NetworkLogger {
   }
 
   Future<List<NetworkLogEntry>> retrieveLogsAsModelList() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$_logFilePath');
-    final lines = await file.readAsLines();
+    final lines = await _logFile.readAsLines();
     List<NetworkLogEntry> logs = [];
     lines.forEach((line) {
       logs.add(NetworkLogEntry.fromJson(jsonDecode(line)));
