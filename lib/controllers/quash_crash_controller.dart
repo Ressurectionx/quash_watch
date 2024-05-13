@@ -9,20 +9,37 @@ class QuashCrashWatch {
   static final ErrorLogger _errorLogger = ErrorLogger();
 
   static Future<void> logError(String error) async {
-    print("here");
-    final timeStamp = DateTime.now();
-    final logMessage = 'Crash: $error at $timeStamp';
-    await _errorLogger.logError(logMessage);
+    print("Logging error: $error");
+
+    try {
+      final timeStamp = DateTime.now();
+      final logMessage = 'Crash: $error at $timeStamp';
+      await _errorLogger.logError(logMessage);
+    } catch (e) {
+      print('Error logging error: $e');
+    }
   }
 
   static Future<List<Map<String, dynamic>>> loadErrorLogs() async {
-    final errorLogs = await _errorLogger.loadErrorLogs();
-    return errorLogs.map((log) => log.toJson()).toList();
+    try {
+      print("Loading error logs...");
+      final errorLogs = await _errorLogger.loadErrorLogs();
+      return errorLogs.map((log) => log.toJson()).toList();
+    } catch (e) {
+      print('Error loading error logs: $e');
+      return [];
+    }
   }
 
   static Future<List<LogEntry>> loadErrorLogsAsCrashData() async {
-    final errorLogs = await _errorLogger.loadErrorLogs();
-    return errorLogs.map((log) => LogEntry.fromJson(log.toJson())).toList();
+    try {
+      print("Loading error logs as crash data...");
+      final errorLogs = await _errorLogger.loadErrorLogs();
+      return errorLogs.map((log) => LogEntry.fromJson(log.toJson())).toList();
+    } catch (e) {
+      print('Error loading error logs as crash data: $e');
+      return [];
+    }
   }
 }
 
@@ -32,9 +49,11 @@ class ErrorLogger {
 
   ErrorLogger() {
     _initialize();
+    print("here3");
   }
 
   Future<void> _initialize() async {
+    print("here4");
     _directory = await getApplicationDocumentsDirectory();
     _logFile = File('${_directory.path}/crash_log21.txt');
     if (!await _logFile.exists()) {
@@ -43,6 +62,7 @@ class ErrorLogger {
   }
 
   Future<void> logError(String error) async {
+    print("here6");
     try {
       final timeStamp = DateTime.now();
       final logEntry =
@@ -55,6 +75,7 @@ class ErrorLogger {
   }
 
   Future<List<LogEntry>> loadErrorLogs() async {
+    print("here7");
     try {
       if (await _logFile.exists()) {
         final logs = await _logFile.readAsLines();
@@ -76,6 +97,7 @@ class ErrorLogger {
   }
 
   Future<String> retrieveLogsInJSON() async {
+    print("here8");
     try {
       if (await _logFile.exists()) {
         final logs = await loadErrorLogs();

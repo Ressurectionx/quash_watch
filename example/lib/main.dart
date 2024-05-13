@@ -3,14 +3,12 @@ import 'package:quash_watch/quash_watch.dart';
 import 'package:quash_watch_example/view/quash_board.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+
   QuashWatch quash = QuashWatch();
   quash.handleErrors(); // Set up error handling
 
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    await QuashCrashWatch.logError(details.exception.toString());
-  };
-
+  // Run the app by starting with the root widget (MyApp)
   runApp(MyApp());
 }
 
