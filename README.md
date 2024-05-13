@@ -15,10 +15,12 @@ Integrate and utilize the QuashWatch plugin effortlessly in your Flutter project
 Incorporate the QuashWatch plugin into your project by following these straightforward instructions:
 
 1 Add the QuashWatch dependency to your `pubspec.yaml` file:
+(This plugin is currently unpublished, so please clone it and provide the path in your other project.)
 
 ```yaml
 dependencies:
-  quash_watch: ^1.0.0
+  quash_watch:
+    path: /Users/Username/projects/quash_watch
 ```
 
 2 Run `flutter pub get` in your terminal to install the dependency.
