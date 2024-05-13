@@ -101,27 +101,3 @@ class ErrorLogger {
     }
   }
 }
-
-
-
-// class QuashCrashWatch {
-//   static final ErrorLogger _errorLogger = ErrorLogger();
-
-//   static Future<void> handleFlutterErrors() async {
-//     FlutterError.onError = (FlutterErrorDetails details) {
-//       // Log the error
-//       logError(details.exceptionAsString());
-//       // You can also do other things here like show a custom error UI
-//     };
-//   }
-
-//   static Future<void> logError(String error) async {
-//     final timeStamp = DateTime.now();
-//     final logMessage = 'Crash: $error at $timeStamp';
-//     await _errorLogger.logError(logMessage);
-//   }
-
-//   static Future<List<LogEntry>> loadErrorLogs() async {
-//     return _errorLogger.loadErrorLogs();
-//   }
-// }

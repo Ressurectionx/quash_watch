@@ -6,14 +6,13 @@ import 'package:quash_watch/controllers/quash_network_controller.dart';
 import 'package:quash_watch/models/log_entry_model.dart';
 
 import 'package:quash_watch/controllers/quash_screen_controller.dart';
-import 'package:quash_watch/quash_watch_platform_interface.dart';
 
 class QuashWatch {
   final QuashNetworkWatch _networkWatch = QuashNetworkWatch();
 
-  Future<String?> getPlatformVersion() {
-    return QuashWatchPlatform.instance.getPlatformVersion();
-  }
+  // Future<String?> getPlatformVersion() {
+  //   return QuashWatchPlatform.instance.getPlatformVersion();
+  // }
 
   Future<void> handleErrors() async {
     FlutterError.onError = (FlutterErrorDetails details) {
