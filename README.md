@@ -41,78 +41,78 @@ Efficiently utilize QuashWatch's powerful features to manage network activity, m
 
 Effortlessly capture and manage network activity with QuashWatch's versatile logging capabilities.
 
-#### saveNetworkLogs
+##### saveNetworkLogs
 
 Save detailed network logs to monitor communication and analyze performance.
 
 ```dart
-await QuashWatch().saveNetworkLogs({
-  'timestamp': DateTime.now().toString(),
-  'url': 'https://example.com/api',
-  'statusCode': 200,
-  'response': {'message': 'Success'},
-});
+  final QuashWatch _quashWatch = QuashWatch();
+
+   _quashWatch.saveNetworkLogs({
+        'timestamp': DateTime.now().toIso8601String(),
+        'url': response.requestOptions.uri.toString(),
+        'statusCode': response.statusCode,
+        'responseData': json.decode(response.toString()),
+      });
 ```
 
-#### Integration with Dio
+##### Integration with Dio
 
 Seamlessly integrate QuashWatch with Dio for enhanced monitoring and logging of HTTP requests.
 
 ```dart
-dio.interceptors.add(QuashNetworkWatch());
+  dio.interceptors.add(QuashNetworkWatch());
 ```
 
-### Retrieving Network Logs
+##### Retrieving Network Logs
 
 Retrieve and analyze network logs to gain insights into your application's behavior and performance.
 
 ```dart
+  final QuashWatch _quashWatch = QuashWatch();
 
-String networkLogs = await QuashWatch().retrieveNetworkLogs();
-print(networkLogs);
-
+  String networkLogs = await _quashWatch.retrieveNetworkLogs();
+  print(networkLogs);
 ```
 
 ### Monitoring Screens
 
 Monitor screens within your application to track user interactions and behavior effectively.
+Its very simple to use this feature just wrap your widget with QuashScreenWatch
 
 ```dart
 
-await QuashWatch().watchScreen(MyScreen());
+  QuashScreenWatch(child: YourWidget())
 
 ```
 
-### Logging Errors
+### Handling Crash Reports
 
-Efficiently log errors occurring within your application to facilitate debugging and analysis.
+QuashWatch provides a convenient feature for handling crash reports within your Flutter application. By logging errors and exceptions, you can effectively monitor and analyze application crashes to diagnose issues and optimize reliability.
+
+##### Logging Crash Reports
+
+just add this line in your main method and it will do remaining work for you
+
+```dart
+  QuashWatch quash = QuashWatch();
+
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    await quash.handleErrors();
+  };
+
+```
+
+##### Retrieving Crash Reports:
+
+To get crash report and show it on your screen you can use following code
 
 ```dart
 
-await QuashWatch().logError('An error occurred');
+Future<List<LogEntry>> loadErrorLogsAsCrashData() async {
+  return await quashWatch.loadErrorLogsAsCrashData();
+}
 
 ```
 
-### Retrieving Error Logs
-
-Retrieve and analyze error logs to diagnose issues and optimize your application's reliability.
-
-```dart
-
-List<Map<String, dynamic>> errorLogs = await QuashWatch().loadErrorLogs();
-print(errorLogs);
-
-```
-
-### Loading Error Logs as Crash Data
-
-Load error logs as crash data to gain deeper insights into application crashes and exceptions.
-
-```dart
-
-List<LogEntry> crashData = await QuashWatch().loadErrorLogsAsCrashData();
-print(crashData);
-
-```
-
-With QuashWatch, managing network and error logs in your Flutter application has never been easier. Incorporate these powerful features to streamline development and enhance reliability.
+.
